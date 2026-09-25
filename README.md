@@ -64,3 +64,74 @@ Should report the connection succeeded.
 
 Write the actual Rust app (axum + sqlx: `/`, `/health`, `/visits`) and
 get it running on this VM.
+
+## The app
+
+Deliberately minimal — its job is to prove the infrastructure, not be
+interesting:
+
+| Route | Behavior |
+|---|---|
+| `GET /` | `{"version": "...", "served_by": "netlab-app-rust"}` |
+| `GET /health` | `200 OK`, empty body — for load balancer health checks later |
+| `GET /visits` | Inserts a row, returns `{"visits": <count>}` |
+
+Migrations run automatically on startup (`sqlx::migrate!`), tracked in
+their own `_sqlx_migrations` table — safe to restart the app repeatedly.
+
+## Deploying — VM path (current, manual)
+
+This step builds the app **on the VM itself** via a live-installed Rust
+toolchain, since `private-net` has internet access (unlike `data-net` —
+see ADR 0005). This is a deliberate, temporary approach: Phase 4
+(CI/CD) will replace this with a pre-built artifact deployed via a
+pull-based mechanism, consistent with the "nothing compiled on the
+target" principle this whole project is built around. For now, getting
+something running and provable matters more than the deploy mechanism
+being final.
+
+```bash
+ssh -J netlab-admin@10.0.1.10 netlab-admin@10.0.2.20
+```
+
+On the app VM:
+```bash
+# Install Rust (private-net has internet access, unlike data-net)
+curl https://sh.rustup.rs -sSf | sh -s -- -y
+source "$HOME/.cargo/env"
+
+# Get the code onto the VM
+git clone https://github.com/WilliamFly/wm-infra-netlab-app-rust.git
+cd wm-infra-netlab-app-rust
+
+# Real env file — fill in the actual db_app_password
+cp .env.example .env
+nano .env   # set DATABASE_URL's password to match wm-infra-netlab-db
+
+cargo build --release
+```
+
+Install as a systemd service so it survives reboots/crashes:
+```bash
+sudo cp deploy/netlab-app-rust.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable --now netlab-app-rust
+sudo systemctl status netlab-app-rust
+```
+
+## Verifying
+
+From the app VM itself:
+```bash
+curl localhost:8080/
+curl localhost:8080/health
+curl localhost:8080/visits
+curl localhost:8080/visits   # run again — count should increment
+```
+
+From the **router** (it has a direct interface on `private-net`,
+`10.0.2.1` — no forwarding rule needed to reach `10.0.2.20` from there):
+```bash
+ssh netlab-admin@10.0.1.10
+curl 10.0.2.20:8080/
+```

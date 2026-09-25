@@ -1,0 +1,15 @@
+[Unit]
+Description=netlab-app-rust
+After=network.target
+
+[Service]
+Type=simple
+User=netlab-admin
+WorkingDirectory=/home/netlab-admin/wm-infra-netlab-app-rust
+EnvironmentFile=/home/netlab-admin/wm-infra-netlab-app-rust/.env
+ExecStart=/home/netlab-admin/wm-infra-netlab-app-rust/target/release/netlab-app-rust
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

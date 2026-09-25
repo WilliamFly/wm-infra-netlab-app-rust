@@ -1,0 +1,15 @@
+# Copy this file to terraform.tfvars and fill in real values.
+# terraform.tfvars itself is gitignored — never commit it.
+
+base_image_path = "/home/user/images/ubuntu-24.04-server-cloudimg-amd64.img"
+ssh_public_key  = "ssh-ed25519 AAAA...your-key-here... comment"
+
+# Must match what wm-infra-netlab-db was actually configured with —
+# get this value out-of-band, never commit the real one.
+db_app_password = "same-password-as-wm-infra-netlab-db"
+
+# Optional overrides (defaults shown):
+# storage_pool = "default"
+# db_host      = "10.0.3.20"
+# db_name      = "netlab_app"
+# db_app_user  = "app_user"

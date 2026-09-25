@@ -1,0 +1,29 @@
+#cloud-config
+hostname: netlab-app-rust
+manage_etc_hosts: true
+
+users:
+  - name: netlab-admin
+    groups: sudo
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    ssh_authorized_keys:
+      - ${ssh_public_key}
+    lock_passwd: true
+
+ssh_pwauth: false
+package_update: true
+package_upgrade: true
+
+# Deliberately minimal — no Rust toolchain, no app code, nothing else
+# installed yet. This step only proves the VM boots on private-net with
+# the right static IP and can reach the DB. Unlike data-net, private-net
+# already has internet access (private -> public from Phase 1), so no
+# temp-egress workaround is needed here (see ADR 0005) — package installs
+# here work live, same as the router got them.
+#
+# The actual deployment model for the app itself will follow the
+# immutable-artifact principle from this project's CI/CD design (built
+# once in CI, deployed as a finished binary/image) rather than compiling
+# Rust on this VM directly — so a Rust toolchain may never actually need
+# to live here at all, depending on which path (VM vs Docker) ships first.

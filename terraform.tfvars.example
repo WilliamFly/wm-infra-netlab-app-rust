@@ -9,7 +9,9 @@ ssh_public_key  = "ssh-ed25519 AAAA...your-key-here... comment"
 db_app_password = "same-password-as-wm-infra-netlab-db"
 
 # Optional overrides (defaults shown):
-# storage_pool = "default"
-# db_host      = "10.0.3.20"
-# db_name      = "netlab_app"
-# db_app_user  = "app_user"
+# storage_pool  = "default"
+# db_host       = "10.0.3.20"
+# db_name       = "netlab_app"
+# db_app_user   = "app_user"
+# app_vcpu      = 1
+# app_memory_mb = 1024

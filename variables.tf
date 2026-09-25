@@ -14,6 +14,18 @@ variable "ssh_public_key" {
   type        = string
 }
 
+variable "app_vcpu" {
+  description = "vCPUs for the Rust app VM"
+  type        = number
+  default     = 1
+}
+
+variable "app_memory_mb" {
+  description = "Memory (MB) for the Rust app VM"
+  type        = number
+  default     = 1024
+}
+
 # DB connection details — the database itself is NOT provisioned here.
 # See wm-infra-netlab-db (separate repo, single owner of that resource).
 variable "db_host" {

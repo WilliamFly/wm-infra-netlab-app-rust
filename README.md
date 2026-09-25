@@ -130,7 +130,7 @@ curl localhost:8080/visits   # run again — count should increment
 ```
 
 From the **router** (it has a direct interface on `private-net`,
-`10.0.2.1` — no forwarding rule needed to reach `10.0.2.20` from there):
+`10.0.2.254` — no forwarding rule needed to reach `10.0.2.20` from there):
 ```bash
 ssh netlab-admin@10.0.1.10
 curl 10.0.2.20:8080/

@@ -15,12 +15,22 @@ ssh_pwauth: false
 package_update: true
 package_upgrade: true
 
-# Deliberately minimal — no Rust toolchain, no app code, nothing else
-# installed yet. This step only proves the VM boots on private-net with
-# the right static IP and can reach the DB. Unlike data-net, private-net
-# already has internet access (private -> public from Phase 1), so no
-# temp-egress workaround is needed here (see ADR 0005) — package installs
-# here work live, same as the router got them.
+# build-essential/pkg-config/libssl-dev: needed to compile Rust crates
+# with C dependencies (e.g. proc-macro2 needs a working `cc` linker) —
+# discovered the hard way when `cargo build` failed with "linker `cc`
+# not found" on a VM that didn't have these yet. git isn't guaranteed
+# present on the base cloud image either.
+packages:
+  - build-essential
+  - pkg-config
+  - libssl-dev
+  - git
+
+# No Rust toolchain baked in — that's still installed live via rustup
+# during deploy (see the repo README), not here. Unlike data-net,
+# private-net already has internet access (private -> public from
+# Phase 1), so no temp-egress workaround is needed here (see ADR 0005) —
+# package installs here work live, same as the router got them.
 #
 # The actual deployment model for the app itself will follow the
 # immutable-artifact principle from this project's CI/CD design (built

@@ -1,0 +1,6 @@
+---
+- name: Harden app VM
+  hosts: app
+  become: true
+  roles:
+    - harden-baseline

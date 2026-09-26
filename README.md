@@ -135,3 +135,25 @@ From the **router** (it has a direct interface on `private-net`,
 ssh netlab-admin@10.0.1.10
 curl 10.0.2.20:8080/
 ```
+
+## Security / Hardening
+
+This VM has `harden-baseline` applied via `ansible/playbook-app.yml`:
+
+- SSH hardened (no root login, no password auth)
+- `ufw` enabled, default-deny incoming
+- Port 8080 (the app) is scoped to `10.0.2.0/24` (private-net) only —
+  reachable from the router and anything else on private-net, not the
+  open internet
+- `fail2ban` active on sshd
+- `unattended-upgrades` enabled
+
+Re-run after any change to `ansible/group_vars/app.yml`:
+
+```bash
+cd ansible
+ansible-playbook playbook-app.yml
+```
+
+`private-net` has a NAT route via the router, so unlike the DB repo, no
+egress toggle is needed here for package installs.

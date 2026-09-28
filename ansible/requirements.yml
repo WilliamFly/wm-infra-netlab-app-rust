@@ -1,6 +1,8 @@
 roles:
   - src: https://github.com/WilliamFly/wm-infra-netlab-harden-baseline
     name: harden-baseline
+  - src: https://github.com/WilliamFly/wm-infra-netlab-docker-host
+    name: docker-host
 collections:
   - name: community.general
   - name: ansible.posix

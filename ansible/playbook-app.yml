@@ -1,6 +1,7 @@
 ---
-- name: Harden app VM
+- name: Harden app VM and install Docker
   hosts: app
   become: true
   roles:
     - harden-baseline
+    - docker-host

@@ -4,8 +4,10 @@ harden_admin_ssh_keys:
 
 harden_ufw_allowed_ports:
   - { port: "22", proto: "tcp", comment: "SSH" }
-  - { port: "8080", proto: "tcp", from: "10.0.2.0/24", comment: "app HTTP (VM path) - private-net only" }
-  - { port: "8081", proto: "tcp", from: "10.0.2.0/24", comment: "app HTTP (Docker path) - private-net only" }
+  - { port: "8080", proto: "tcp", from: "10.0.2.0/24", comment: "app HTTP - private-net only" }
 
 docker_host_users:
   - netlab-admin
+
+docker_published_ports:
+  - { port: "8080", proto: "tcp", from: "10.0.2.0/24" }

@@ -5,13 +5,9 @@ services:
     container_name: netlab-app-rust
     restart: unless-stopped
     ports:
-      - "8081:8080"
+      - "8080:8080"
     env_file:
       - .env
     environment:
-      # Fixed regardless of .env, so the container-internal port always
-      # matches the Dockerfile's EXPOSE and this compose file's mapping.
       PORT: "8080"
-      # Distinct from the VM-native deploy's SERVED_BY so you can tell
-      # which path actually answered a request while testing both.
       SERVED_BY: "netlab-app-rust-docker"

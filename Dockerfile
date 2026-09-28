@@ -1,5 +1,5 @@
 # --- Build stage ---
-FROM rust:1.82-bookworm AS builder
+FROM rust:1.98.1-bookworm AS builder
 WORKDIR /build
 
 # Cache dependencies separately from source changes

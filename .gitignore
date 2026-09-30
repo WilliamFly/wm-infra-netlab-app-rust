@@ -23,6 +23,8 @@ crash.*.log
 *.retry
 inventory/host_vars/*/vault.yml
 !inventory/host_vars/*/vault.yml.example
+ansible/roles/harden-baseline/
+ansible/roles/docker-host/
 
 # harden-baseline is pulled in via `ansible-galaxy install -r requirements.yml`
 # from its own repo (wm-infra-netlab-harden-baseline) — fetched, not

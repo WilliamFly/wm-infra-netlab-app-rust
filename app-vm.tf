@@ -20,6 +20,12 @@ resource "libvirt_volume" "app_disk" {
   pool           = var.storage_pool
   base_volume_id = libvirt_volume.ubuntu_base.id
   format         = "qcow2"
+  # Base cloud image defaults to ~2.4GB — nowhere near enough for a Rust
+  # toolchain + dependency build. Ubuntu cloud images auto-grow their
+  # root partition to fill whatever disk size they're given (cloud-init's
+  # growpart/resizefs, on by default) — no extra cloud-init config needed,
+  # just a bigger declared size here.
+  size = var.app_disk_size_gb * 1024 * 1024 * 1024
 }
 
 resource "libvirt_cloudinit_disk" "app" {

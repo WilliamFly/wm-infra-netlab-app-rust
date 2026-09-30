@@ -26,6 +26,12 @@ variable "app_memory_mb" {
   default     = 1024
 }
 
+variable "app_disk_size_gb" {
+  description = "Disk size (GB) for the app VM — the base cloud image defaults to ~2.4GB, far too small for a Rust toolchain + build artifacts"
+  type        = number
+  default     = 20
+}
+
 # DB connection details — the database itself is NOT provisioned here.
 # See wm-infra-netlab-db (separate repo, single owner of that resource).
 variable "db_host" {

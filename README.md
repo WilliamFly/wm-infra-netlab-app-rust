@@ -88,6 +88,27 @@ curl 10.0.2.20:8080/visits
 `served_by` in the response tells you which method is actually running
 (`netlab-app-rust` for VM-native, `netlab-app-rust-docker` for Docker).
 
+## Testing & CI
+
+The app is split into a library crate (`src/lib.rs`, exposing `app()`
+and `AppState`) and a thin `src/main.rs` binary, so the router can be
+built and tested without a running process. `tests/integration.rs`
+spins up the real axum app in-process on an OS-assigned port and drives
+it with real HTTP calls (`reqwest`):
+
+```bash
+cargo test
+```
+
+Requires a reachable Postgres via `DATABASE_URL`. There's no dedicated
+local test-DB setup for this project — CI is the single gate (see
+`wm-infra-netlab/docs/phase4-plan.md` for the reasoning).
+
+GitHub Actions (`.github/workflows/ci.yml`) runs the same tests on
+every push/PR to `main`, against a throwaway Postgres service
+container. The Rust toolchain is pinned to `1.98.1` in CI, matching the
+version pinned in the `Dockerfile`'s builder image.
+
 ## Security / Hardening
 
 - SSH hardened, `ufw` enabled, default-deny incoming
